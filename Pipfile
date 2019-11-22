@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "<1.12"
+pylint = "*"
 
 [dev-packages]
 selenium = "<4"

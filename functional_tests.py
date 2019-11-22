@@ -1,5 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
 import unittest
+
 
 class NewVisitorTest(unittest.TestCase):
 
@@ -16,14 +19,30 @@ class NewVisitorTest(unittest.TestCase):
 
         # notice browser title
         self.assertIn( "To-Do" , self.browser.title)
-        self.fail('Finish the test')
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn( "To-Do", header_text)
 
         # enter to-do
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute("placeholder"),
+            "Enter a to-do item"
+        )
 
         # type "buy surfboard"
+        inputbox.send_keys("buy surfboard")
 
         # hit enter, page updates
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
+        table = self.browser.find_element_by_id("id_list_table")
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == "1: buy surfboard" for row in rows)
+        )
+
+        self.fail("finish the test!")
         # add another item ("buy wax")
 
 if __name__ == '__main__':
