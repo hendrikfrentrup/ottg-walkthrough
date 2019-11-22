@@ -1,5 +1,6 @@
 db.sqlite3
 geckodriver.log
+.vscode
 
 __pychache__
 *.pyc
