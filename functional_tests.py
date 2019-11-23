@@ -29,22 +29,28 @@ class NewVisitorTest(unittest.TestCase):
             "Enter a to-do item"
         )
 
-        # type "buy surfboard"
+        # type first item "buy surfboard"
         inputbox.send_keys("buy surfboard")
-
         # hit enter, page updates
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
+        # page updates with item
         table = self.browser.find_element_by_id("id_list_table")
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == "1: buy surfboard" for row in rows),
-            "New item did not appear in table"
-        )
+        self.assertIn("1: buy surfboard", [row.text for row in rows])
 
+        # type another item "buy wax"
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys("buy wax")
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        # page updates with another item
+        table = self.browser.find_element_by_id("id_list_table")
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn("2: buy wax", [row.text for row in rows])
         self.fail("finish the test!")
-        # add another item ("buy wax")
 
 if __name__ == '__main__':
     unittest.main()
