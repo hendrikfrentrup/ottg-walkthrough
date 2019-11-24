@@ -1,10 +1,13 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import WebDriverException
 import time
-import unittest
+
+MAX_WAIT=10
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -12,15 +15,23 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
+    def wait_for_row_in_list_table(self, row_text):
+        start_time = time.time()
+        while True:
+            try:        
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_can_start_a_list_and_retrieve_it_later(self):
 
         # navigate to homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # notice browser title
         self.assertIn( "To-Do" , self.browser.title)
@@ -34,31 +45,20 @@ class NewVisitorTest(unittest.TestCase):
             "Enter a to-do item"
         )
 
-        # type first item "buy surfboard"
+        # type first item "buy surfboard" & hit enter, page updates
         inputbox.send_keys("buy surfboard")
-        # hit enter, page updates
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
-        # page updates with item
-        table = self.browser.find_element_by_id("id_list_table")
-        rows = table.find_elements_by_tag_name('tr')
-        self.check_for_row_in_list_table('1: buy surfboard')
+        self.wait_for_row_in_list_table('1: buy surfboard')
 
-        # type another item "buy wax"
+        # type another item "buy wax"  & hit enter, page updates again
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys("buy wax")
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
-        # page updates with another item
-        self.check_for_row_in_list_table('1: buy surfboard')
-        self.check_for_row_in_list_table("2: buy wax")
+        self.wait_for_row_in_list_table('1: buy surfboard')
+        self.wait_for_row_in_list_table("2: buy wax")
 
 
 
-        self.fail("finish the test!")
-
-if __name__ == '__main__':
-    unittest.main()
-    # (warnings='ignore')
+        self.fail("finish the test!!!")
