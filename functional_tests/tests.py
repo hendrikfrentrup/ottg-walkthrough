@@ -77,7 +77,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # user 2 visits homepage, no sign of user 1 list items
         self.browser.get(self.live_server_url)
-        page_text = self.browser.find_elements_by_tag_name('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('buy surfboard', page_text)
         self.assertNotIn('buy a wetsuit', page_text)
 
@@ -93,7 +93,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(second_user_list_url, first_user_list_url)
 
         # assert user 2 items in list, not user 1 items 
-        page_text = self.browser.find_elements_by_tag_name('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('buy a wetsuit', page_text)
         self.assertIn('buy notebook', page_text)
 
