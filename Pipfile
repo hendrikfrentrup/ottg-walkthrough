@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 django = "<1.12"
-pylint = "*"
 
 [dev-packages]
+pylint = "*"
+fabric3 = "*"
 selenium = "<4"
 
 [requires]

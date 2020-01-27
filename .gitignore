@@ -6,5 +6,7 @@ __pychache__
 *.pyc
 
 static/
+virtualenv/
+
 .terraform
 .env
