@@ -27,7 +27,8 @@ class ItemValidationTest(FunctionalTest):
         ))
         
         # again another good submission with text, success
-        inputbox = self.browser.find_element_by_id('id_new_item').send_keys("buy screen")
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys("buy screen")
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: buy drill')
         self.wait_for_row_in_list_table('2: buy screen')
