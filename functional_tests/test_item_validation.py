@@ -1,6 +1,6 @@
 from .base import FunctionalTest
 from selenium.webdriver.common.keys import Keys
-DUPLICATE_ITEM_ERROR = "You have already got this in your list"
+from lists.forms import DUPLICATE_ITEM_ERROR
 
 class ItemValidationTest(FunctionalTest):
 
