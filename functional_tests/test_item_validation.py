@@ -1,5 +1,6 @@
 from .base import FunctionalTest
 from selenium.webdriver.common.keys import Keys
+DUPLICATE_ITEM_ERROR = "You have already got this in your list"
 
 class ItemValidationTest(FunctionalTest):
 
@@ -28,3 +29,18 @@ class ItemValidationTest(FunctionalTest):
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: buy drill')
         self.wait_for_row_in_list_table('2: buy screen')
+
+    def test_cannot_add_duplicate_items(self):
+        # visit homepage and submit list item
+        self.browser.get(self.live_server_url)
+        self.get_item_input_box().send_keys("buy duplicate")
+        self.get_item_input_box().send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: buy duplicate')
+
+        self.get_item_input_box().send_keys("buy duplicate")
+        self.get_item_input_box().send_keys(Keys.ENTER)
+
+        self.wait_for(lambda: self.assertEqual(
+            self.browser.find_element_by_css_selector('.has-error').text,
+            DUPLICATE_ITEM_ERROR
+            ))
