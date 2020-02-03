@@ -11,5 +11,5 @@ virtualenv/
 .terraform
 .env
 
-
+*.tf*
 tf-live
