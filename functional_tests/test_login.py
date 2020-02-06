@@ -5,7 +5,7 @@ import os
 
 from .base import FunctionalTest
 
-TEST_EMAIL=os.environ.get('TEST_EMAIL')
+TEST_RECIPIENT=os.environ.get('TEST_RECIPIENT')
 SUBJECT = 'Your login link for Superlists'
 
 class LoginTest(FunctionalTest):
@@ -13,7 +13,7 @@ class LoginTest(FunctionalTest):
     def test_can_get_email_link_to_log_in(self):
         # user enters email address upon first visit
         self.browser.get(self.live_server_url)
-        self.browser.find_element_by_name('email').send_keys(TEST_EMAIL)
+        self.browser.find_element_by_name('email').send_keys(TEST_RECIPIENT)
         self.browser.find_element_by_name('email').send_keys(Keys.ENTER)
 
         # message confirms email sent
@@ -23,7 +23,7 @@ class LoginTest(FunctionalTest):
 
         # email found in mailbox
         email = mail.outbox[0]
-        self.assertIn(TEST_EMAIL, email.to)
+        self.assertIn(TEST_RECIPIENT, email.to)
         self.assertEqual(email.subject, SUBJECT)
 
         # email has a url link in it
@@ -38,4 +38,4 @@ class LoginTest(FunctionalTest):
         self.browser.get(url)
         self.wait_for(lambda: self.browser.find_elements_by_link_text('Log out'))
         navbar = self.browser.find_element_by_css_selector('.navbar')
-        self.assertIn(TEST_EMAIL, navbar.text)
+        self.assertIn(TEST_RECIPIENT, navbar.text)
