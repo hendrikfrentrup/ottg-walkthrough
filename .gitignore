@@ -2,6 +2,7 @@ db.sqlite3
 geckodriver.log
 .vscode
 
+.pytest_cache
 __pychache__
 *.pyc
 
