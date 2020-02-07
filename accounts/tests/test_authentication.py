@@ -14,14 +14,14 @@ class AuthenticateTest(TestCase):
         self.assertIsNone(result)
 
     def test_returns_new_user_with_correct_email_if_token_exists(self):
-        email = 'new@systematico-user.co'
+        email = 'new@site-user.co'
         token = Token.objects.create(email=email)
         user = PasswordlessAuthenticationBackend().authenticate(token.uid)
         new_user = User.objects.get(email=email)
         self.assertEqual(user, new_user)
 
     def test_returns_exisiting_user_with_correct_email_if_token_exists(self):
-        email = 'exists@systematico-user.co'
+        email = 'exists@site-user.co'
         existing_user = User.objects.create(email=email)
         token = Token.objects.create(email=email)
         user = PasswordlessAuthenticationBackend().authenticate(token.uid)
@@ -33,15 +33,15 @@ class GetUserTest(TestCase):
 
     def test_gets_user_by_email(self):
         User.objects.create(email='another@example.com')
-        desired_user = User.objects.create(email='user@systematico-user.co')
+        desired_user = User.objects.create(email='user@site-user.co')
         found_user = PasswordlessAuthenticationBackend().get_user(
-            'user@systematico-user.co'
+            'user@site-user.co'
         )
         self.assertEqual(found_user, desired_user)
 
     def test_returns_None_if_no_user_with_that_email(self):
         self.assertIsNone(
             PasswordlessAuthenticationBackend().get_user(
-                'no_user@systematico-user.co'
+                'no_user@site-user.co'
             )
         )
