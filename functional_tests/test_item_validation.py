@@ -62,7 +62,7 @@ class ItemValidationTest(FunctionalTest):
             self.get_error_element().is_displayed()
         ))
 
-        # user inpy clears the error
+        # user input clears the error
         self.get_item_input_box().send_keys('n')
         self.wait_for(lambda: self.assertFalse(
             self.get_error_element().is_displayed()
