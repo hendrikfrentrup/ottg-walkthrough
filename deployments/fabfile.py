@@ -19,6 +19,7 @@ def _get_latest_source():
         run('git fetch')
     else:
         run(f'git clone {REPO_URL} .')
+    run('git checkout server-side-debug')
     current_commit = local("git log -n 1 --format=%H", capture=True)
     run(f'git reset --hard {current_commit}')
 

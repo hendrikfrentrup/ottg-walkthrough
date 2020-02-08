@@ -7,8 +7,11 @@ from django.core.urlresolvers import reverse
 
 FROM_EMAIL = os.environ.get('FROM_EMAIL')
 
+print('loading accounts view module')
+
 def send_login_email(request):
     email = request.POST['email']
+    print(f'sending email view: sending to {email}')
     token = Token.objects.create(email=email)
     login_url = request.build_absolute_uri( 
         reverse('login') + f'?token={str(token.uid)}'
@@ -24,7 +27,9 @@ def send_login_email(request):
     return redirect('/')
 
 def login(request):
+    print(f'login attempt')
     user = auth.authenticate(uid=request.GET.get('token'))
     if user:
+        print(f'loggin user in: user {user.email}')
         auth.login(request, user)
     return redirect('/')

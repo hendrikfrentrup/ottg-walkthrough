@@ -3,10 +3,14 @@ from django.core.exceptions import ValidationError
 from lists.models import Item, List
 from lists.forms import ItemForm, ExistingListItemForm
 
+print('loading lists view module')
+
 def home_page(request):
+    print('home page view')
     return render(request, 'home.html', {'form': ItemForm()})
 
 def view_list(request, list_id):
+    print(f'list view: id {list_id}')
     list_ = List.objects.get(id=list_id)
     form = ExistingListItemForm(for_list=list_)
     if request.method == 'POST':
@@ -17,6 +21,7 @@ def view_list(request, list_id):
     return render(request, 'list.html', {"list": list_, 'form': form})
 
 def new_list(request):
+    print(f'new list view')
     form = ItemForm(data=request.POST)
     if form.is_valid():
         list_ = List.objects.create()
