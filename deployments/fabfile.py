@@ -34,6 +34,12 @@ def _create_or_update_dotenv():
     if 'DJANGO_SECRET_KEY' not in current_contents:
         new_secret = ''.join(random.SystemRandom().choices('abcdefghijklmnopqrstuvwxyz0123456789', k=50))
         append('.env', f'DJANGO_SECRET_KEY={new_secret}')
+    from_email = os.environ['FROM_EMAIL']
+    email_password = os.environ['EMAIL_PASSWORD']
+    test_recipient = os.environ['TEST_RECIPIENT']
+    append('.env', f'FROM_EMAIL={from_email}')
+    append('.env', f'EMAIL_PASSWORD={email_password}')
+    append('.env', f'TEST_RECIPIENT={test_recipient}')
 
 def _update_static_files():
     run('./virtualenv/bin/python manage.py collectstatic --noinput')
