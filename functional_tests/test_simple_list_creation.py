@@ -23,26 +23,15 @@ class NewVisitorTest(FunctionalTest):
         )
 
         # type first item "buy surfboard" & hit enter, page updates
-        inputbox.send_keys("buy surfboard")
-        inputbox.send_keys(Keys.ENTER)
-
-        self.wait_for_row_in_list_table('1: buy surfboard')
+        self.add_list_item('simple item')
 
         # type another item "buy wax"  & hit enter, page updates again
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys("buy wax")
-        inputbox.send_keys(Keys.ENTER)
-
-        self.wait_for_row_in_list_table('1: buy surfboard')
-        self.wait_for_row_in_list_table("2: buy wax")
+        self.add_list_item('another simple item')
 
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # user 1 starts new to-do list
         self.browser.get(self.live_server_url)
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys("buy a wetsuit")
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: buy a wetsuit")
+        self.add_list_item('user 1 list')
 
         # check for unique URL
         first_user_list_url = self.browser.current_url
@@ -55,14 +44,10 @@ class NewVisitorTest(FunctionalTest):
         # user 2 visits homepage, no sign of user 1 list items
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('buy surfboard', page_text)
-        self.assertNotIn('buy a wetsuit', page_text)
+        self.assertNotIn('user 1 list', page_text)
 
         # user 2 start own list
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys("buy notebook")
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: buy notebook")
+        self.add_list_item('user 2 list')
 
         # check for unique URL
         second_user_list_url = self.browser.current_url
@@ -71,5 +56,5 @@ class NewVisitorTest(FunctionalTest):
 
         # assert user 2 items in list, not user 1 items 
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('buy a wetsuit', page_text)
-        self.assertIn('buy notebook', page_text)
+        self.assertNotIn('user 1 list', page_text)
+        self.assertIn('user 2 list', page_text)

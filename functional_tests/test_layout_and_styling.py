@@ -17,10 +17,8 @@ class LayoutAndStylingTest(FunctionalTest):
         )
 
          # type first item "buy surfboard" & hit enter, page updates
-        inputbox.send_keys("testing style")
-        inputbox.send_keys(Keys.ENTER)
-
-        self.wait_for_row_in_list_table('1: testing style')
+        self.add_list_item('testing style')
+        
         inputbox = self.get_item_input_box()
         self.assertAlmostEqual(
             inputbox.location['x'] + 0.5*inputbox.size['width'],
