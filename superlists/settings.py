@@ -135,7 +135,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 current_pid = os.getpid()
-print(f'***From Email: {EMAIL_HOST_USER} (PID:{current_pid})')
+print(f'***From Email: {EMAIL_HOST_USER} (PID:{current_pid})', flush=True)
 
 LOGGING = {
     'version': 1,

@@ -9,36 +9,36 @@ import time
 FROM_EMAIL = os.environ.get('FROM_EMAIL')
 
 current_pid = os.getpid()
-print(f'loading accounts view module (PID:{current_pid})')
+print(f'loading accounts view module (PID:{current_pid})', flush=True)
 
 def send_login_email(request):
     start = time.time()
-    print(f'sending email view (time: {time.time()-start}) PID:{current_pid}')
+    print(f'sending email view (time: {time.time()-start}) PID:{current_pid}', flush=True)
     email = request.POST['email']
-    print(f'**sending to {email} (time: {time.time()-start}) PID:{current_pid}')
+    print(f'**sending to {email} (time: {time.time()-start}) PID:{current_pid}', flush=True)
     token = Token.objects.create(email=email)
-    print(f'**token created {token.uid} (time: {time.time()-start}) PID:{current_pid}' )
+    print(f'**token created {token.uid} (time: {time.time()-start}) PID:{current_pid}' , flush=True)
     login_url = request.build_absolute_uri( 
         reverse('login') + f'?token={str(token.uid)}'
     )
-    print(f'**url generated {login_url} (time: {time.time()-start}) PID:{current_pid}')
+    print(f'**url generated {login_url} (time: {time.time()-start}) PID:{current_pid}', flush=True)
     email_body = f'Use this link to log in: {login_url}' 
-    print(f'**attempting to send mail (time: {time.time()-start}) PID:{current_pid}')
+    print(f'**attempting to send mail (time: {time.time()-start}) PID:{current_pid}', flush=True)
     send_mail(
         'Your login link for Superlists',
         email_body,
         FROM_EMAIL,
         [email]
     )
-    print(f'**success sending mail (time: {time.time()-start}) PID:{current_pid}')
+    print(f'**success sending mail (time: {time.time()-start}) PID:{current_pid}', flush=True)
     messages.success(request, "Check your email, we've sent you a link you can use to log in.")
-    print(f'**redirecting.. (time: {time.time()-start})')
+    print(f'**redirecting.. (time: {time.time()-start})', flush=True)
     return redirect('/')
 
 def login(request):
-    print(f'login attempt')
+    print(f'login attempt', flush=True)
     user = auth.authenticate(uid=request.GET.get('token'))
     if user:
-        print(f'loggin user in: user {user.email}')
+        print(f'loggin user in: user {user.email}', flush=True)
         auth.login(request, user)
     return redirect('/')
