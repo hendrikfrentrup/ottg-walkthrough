@@ -64,7 +64,7 @@ class ItemValidationTest(FunctionalTest):
         ))
 
     def test_error_messages_are_cleared_on_click(self):
-        # start list and cause validation error
+        # start list and cause validation error by trying duplicate
         self.browser.get(self.live_server_url)
         self.add_list_item('cleared on click')
         self.get_item_input_box().send_keys('cleared on click')
