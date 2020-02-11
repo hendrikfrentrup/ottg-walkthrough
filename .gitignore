@@ -14,3 +14,6 @@ virtualenv/
 
 *.tf*
 tf-live
+
+pytest.ini
+runner.sh

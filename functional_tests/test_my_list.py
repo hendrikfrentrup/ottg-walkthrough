@@ -24,15 +24,15 @@ class MyListTest(FunctionalTest):
             )
         )
 
-    def test_logged_in_users_lists_are_saved_as_my_lists(self):
-        email = TEST_RECIPIENT
-        self.browser.get(self.live_server_url)
-        self.wait_to_be_logged_out(email)
+    # def test_logged_in_users_lists_are_saved_as_my_lists(self):
+    #     email = TEST_RECIPIENT
+    #     self.browser.get(self.live_server_url)
+    #     self.wait_to_be_logged_out(email)
 
-        # test user logging in
-        self.create_pre_authenticated_session(email)
-        self.browser.get(self.live_server_url)
-        self.wait_to_be_logged_in(email)
+    #     # test user logging in
+    #     self.create_pre_authenticated_session(email)
+    #     self.browser.get(self.live_server_url)
+    #     self.wait_to_be_logged_in(email)
 
     def test_logged_in_users_lists_are_saved_as_my_lists(self):
         # user is logged in
