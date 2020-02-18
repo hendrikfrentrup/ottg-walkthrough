@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block header_text %}
-    {% if list.owner == user%}
+    {% if list.owner is undefined %}
+        Your To-Do list
+    {% elif list.owner == user %}
         Your To-Do list
     {% else %}
         <span id='id_list_owner'>{{list.owner.email}}</span>'s todo list

@@ -29,6 +29,11 @@ class ListViewTest(TestCase):
         response = self.client.get(f'/lists/{list_.id}/')
         self.assertTemplateUsed(response, 'list.html')
 
+    def test_anonymous_user_get_your_todo_list_header(self):
+        list_ = List.objects.create()
+        response = self.client.get(f'/lists/{list_.id}/')
+        self.assertContains(response, "Your")
+
     def test_displays_only_items_for_that_list(self):
         correct_list = List.objects.create()
         Item.objects.create(text = 'item 1', list=correct_list)
