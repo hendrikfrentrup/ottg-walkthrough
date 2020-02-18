@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
-{% block header_text %}Your To-Do list{% endblock %}
+{% block header_text %}
+    {% if list.owner == user%}
+        Your To-Do list
+    {% else %}
+        <span id='id_list_owner'>{{list.owner.email}}</span>'s todo list
+    {% endif %}
+{% endblock %}
+
 {% block form_action %}{% url 'view_list' list.id %}{% endblock %}
 
 {% block table %}
@@ -11,4 +18,18 @@
     </tr>
     {% endfor %}
 </table>
+{% endblock %}
+
+{% block extra_content %}
+<h2>Share list with:</h2>
+<form method="POST" action="{% url 'share_list' list.id %}">
+    {% csrf_token %}
+    <input name="sharee" placeholder="your-friends@email.com" />
+</form>
+
+<ul class="list-sharee">
+    {% for sharee in list.shared_with.all %}
+    <li> {{sharee.email}}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

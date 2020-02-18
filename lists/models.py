@@ -4,13 +4,17 @@ from django.conf import settings
 
 class List(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-
+    shared_with = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="lists_shared_with",
+    )
+    
     @property
     def name(self):
         return self.item_set.first().text
 
     def get_absolute_url(self):
-        return reverse('view_list', args=[self.id])
+        return reverse('view_list', args=[self.id]) 
 
     @staticmethod
     def create_new(first_item_text, owner=None):

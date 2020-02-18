@@ -23,7 +23,7 @@ class ListPage(object):
         )
 
     def get_list_owner(self):
-        return self.test.browser.find_elements_by_id('id_list_owner').text
+        return self.test.browser.find_element_by_id('id_list_owner').text
 
     def share_list_with(self, email):
         self.get_share_box().send_keys(email)

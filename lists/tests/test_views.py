@@ -78,7 +78,7 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, f'/lists/{correct_list.id}/')
 
-    def test_displays_item_form(self):
+    def test_displays_existing_list_item_form(self):
         list_ = List.objects.create()
         response = self.client.get(f'/lists/{list_.id}/')
         self.assertIsInstance(response.context['form'], ExistingListItemForm)
@@ -122,14 +122,16 @@ class ListViewTest(TestCase):
 
 class NewListViewIntegratedTest(TestCase):
 
+    URL='/lists/new'
+
     def test_can_save_POST_request(self):
-        self.client.post('/lists/new', data={'text': 'A new list item'})
+        self.client.post(self.URL, data={'text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
     def test_validation_errors_are_shown_on_home_page(self):
-        response = self.client.post('/lists/new', data={'text': ''})
+        response = self.client.post(self.URL, data={'text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
@@ -137,7 +139,7 @@ class NewListViewIntegratedTest(TestCase):
     def test_list_owner_is_saved_if_user_is_authenticated(self):
         user = User.objects.create(email='a@b.com')
         self.client.force_login(user)
-        self.client.post('/lists/new', data={'text': 'new_item'})
+        self.client.post(self.URL, data={'text': 'new_item'})
         list_ = List.objects.first()
         self.assertEqual(list_.owner, user)
 
@@ -202,3 +204,30 @@ class MyListsTest(TestCase):
         response = self.client.get('/lists/users/a@b.com/')
         owner = response.context['owner']
         self.assertEqual(owner, correct_user)
+
+class ShareListTest(TestCase):
+
+    def test_post_redirects_to_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(f'/lists/{list_.id}/share', data={
+            "sharee": "anonymous@site-user.com"
+        })
+        self.assertRedirects(response, f'/lists/{list_.id}/')
+
+    def test_post_with_anonymous_user_shows_error(self):
+        list_ = List.objects.create()
+        response = self.client.post(f'/lists/{list_.id}/share', data={
+            "sharee": "anonymous@site-user.com"
+        }, follow=True)
+        message = list(response.context['messages'])[0]
+        self.assertEqual(message.tags, 'error')
+        self.assertIn('not found', message.message)
+
+    def test_share_list_renders_list_template(self):
+        user = User.objects.create(email='a@b.com')
+        list_ = List.objects.create()
+        response = self.client.post(f'/lists/{list_.id}/share', data={
+            "sharee": "a@b.com"
+        })
+        print(response.context)
+        self.assertIn(user, list_.shared_with.all())

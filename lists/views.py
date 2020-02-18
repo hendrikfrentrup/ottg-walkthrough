@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
+from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib import messages
 from lists.models import Item, List
 from lists.forms import ItemForm, ExistingListItemForm, NewListForm
 from django.contrib.auth import get_user_model
@@ -28,3 +30,14 @@ def new_list(request):
 def my_lists(request, email):
     owner = User.objects.get(email=email)
     return render(request, 'my_lists.html', {'owner': owner})
+
+def share_list(request, list_id):
+    # if request.method == "POST"
+    list_ = List.objects.get(id=list_id)
+    try:
+        sharee = User.objects.get(email=request.POST['sharee'])
+        list_.shared_with.add(sharee)
+        messages.success(request, "Your list was shared successfully.")
+    except User.DoesNotExist:
+        messages.error(request, f'{request.POST["sharee"]} not found')
+    return redirect(list_)

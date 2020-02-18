@@ -8,5 +8,5 @@ class MyListPage(object):
         self.test.browser.find_element_by_link_text('My lists').click()
         self.test.wait_for(lambda: self.test.assertEqual(
             self.test.browser.find_element_by_tag_name('h1').text,
-            'My Lists'
+            'My lists'
         ))

@@ -31,7 +31,7 @@ class SendLoginEmailViewTest(TestCase):
         response = self.client.post('/accounts/send_login_email', data={
             'email': TEST_RECIPIENT
         }, follow=True)
-
+        
         message = list(response.context['messages'])[0]
         self.assertEqual(
             message.message, "Check your email, we've sent you a link you can use to log in."
