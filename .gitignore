@@ -6,15 +6,14 @@ geckodriver.log
 .pytest_cache
 __pychache__
 *.pyc
+.coverage
+htmlcov/
 
 /static
 virtualenv/
-
-.terraform
 .env
 
+.terraform
 *.tf*
 tf-live
-
-pytest.ini
 runner.sh

@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = .
+omit = 
+        **/__init__.py
+        functional_tests/*
