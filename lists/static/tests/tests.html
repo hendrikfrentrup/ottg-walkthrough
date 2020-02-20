@@ -1,53 +1,35 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>JavaScript Tests</title>
-    <link rel="stylesheet" href="qunit-2.9.2.css">
-</head>
+    <link rel="stylesheet" href="qunit-2.9.2.css" />
+  </head>
 
-<body>
+  <body>
     <div id="qunit"></div>
     <div id="qunit-fixture">
-                <form>
-                    <input name="text" />
-                    <div class="has-error">Error text</div>
-                </form>
+      <form id="id_item_form">
+        <input name="text">   
+        <input type="hidden" name="csrfmiddlewaretoken" value="tokey"/>
+        <div class="has-error">
+            <div class="help-block">
+                Error text
+            </div>
+        </div>
+      </form>
+      <table id="id_list_table"></table>
     </div>
 
     <script src="qunit-2.9.2.js"></script>
+    <script src="sinon-8.1.1.js"></script>
     <script src="../jquery-3.4.1.js"></script>
     <script src="../list.js"></script>
 
-    <!-- <script src="tests.js"></script> -->
-    <script>
+    <script src="test_list.js"></script>
 
-    QUnit.test("errors should be hidden on keypress", function (assert){
-        window.Superlits.initialize();
-        $('input[name="text"]').trigger('keypress');
-        assert.equal($('.has-error').is(':visible'), false);
-    });
+</script>
 
-    QUnit.test("errors should NOT be hidden if there is no keypress", function (assert) {
-        window.Superlits.initialize();
-        assert.equal($('.has-error').is(':visible'), true);
-    });
-
-    QUnit.test("errors should be hidden on input click", function (assert) {
-        window.Superlits.initialize();
-        $('input[name="text"]').trigger('click');
-        assert.equal($('.has-error').is(':visible'), false);
-    });
-
-    QUnit.test("errors should NOT be hidden if there is no click", function (assert) {
-        window.Superlits.initialize();
-        assert.equal($('.has-error').is(':visible'), true);
-    });
-
-    </script>
-
-</body>
-
+  </body>
 </html>

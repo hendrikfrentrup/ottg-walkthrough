@@ -1,10 +1,43 @@
-window.Superlits = {};
-window.Superlits.initialize = function() {
-    var inputbox = $('input[name="text"')
-    inputbox.on('keypress', function(){
-        $('.has-error').hide();
+window.Superlists = {};
+
+window.Superlists.updateItems = function(url) {
+  $.get(url).done(function(response) {
+    var rows = "";
+    for (var i = 0; i < response.length; i++) {
+      var item = response[i];
+      rows += "\n<tr><td>" + (i + 1) + ": " + item.text + "</td></tr>";
+    }
+    $("#id_list_table").html(rows);
+  });
+};
+
+window.Superlists.initialize = function(url) {
+  var inputbox = $('input[name="text"]');
+
+  inputbox.on("keypress", function() {
+    $(".has-error").hide();
+  });
+
+  inputbox.on("click", function() {
+    $(".has-error").hide();
+  });
+
+  if (url) {
+    window.Superlists.updateItems(url);
+
+    var form = $("#id_item_form");
+
+    form.on("submit", function(event) {
+      event.preventDefault();
+
+      $.post(url, {
+        text: form.find('input[name="text"]').val(),
+        csrfmiddlewaretoken: form
+          .find('input[name="csrfmiddlewaretoken"]')
+          .val()
+      }).done(function() {
+        window.Superlists.updateItems(url);
+      });
     });
-    inputbox.on('click', function () {
-        $('.has-error').hide();
-    });
+  }
 };

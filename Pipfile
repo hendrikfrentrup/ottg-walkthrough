@@ -11,6 +11,8 @@ gunicorn = "*"
 pylint = "*"
 fabric3 = "*"
 selenium = "<4"
+pytest = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.6"
