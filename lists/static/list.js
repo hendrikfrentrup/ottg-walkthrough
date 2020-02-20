@@ -29,15 +29,26 @@ window.Superlists.initialize = function(url) {
 
     form.on("submit", function(event) {
       event.preventDefault();
-
+      var text_input = form.find('input[name="text"]').val();
       $.post(url, {
-        text: form.find('input[name="text"]').val(),
+        text: text_input,
         csrfmiddlewaretoken: form
           .find('input[name="csrfmiddlewaretoken"]')
           .val()
-      }).done(function() {
-        window.Superlists.updateItems(url);
-      });
+      })
+        .done(function(response) {
+          window.Superlists.updateItems(url);
+        })
+        .fail(function(response) {
+          $(".has-error").show();
+          try {
+            if (response.responseJSON) {
+              $(".help-block").text(response.responseJSON["error"]);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        });
     });
   }
 };

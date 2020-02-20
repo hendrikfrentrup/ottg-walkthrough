@@ -34,38 +34,48 @@ QUnit.test("errors should NOT be hidden if there is no click", function(
   assert.equal($(".has-error").is(":visible"), true);
 });
 
-QUnit.test("should get item by ajax on initialize", function(assert) {
+QUnit.test("should call updateItems on initialize", function(assert) {
   var url = "/getitems/";
+  sandbox.spy(window.Superlists, "updateItems");
   window.Superlists.initialize(url);
 
+  assert.equal(window.Superlists.updateItems.lastCall.args, url);
+});
+
+QUnit.test("updateItems should get correct url by ajax", function(assert) {
+  var url = "/getitems/";
+  window.Superlists.updateItems(url);
   assert.equal(server.requests.length, 1);
   var request = server.requests[0];
   assert.equal(request.url, url);
   assert.equal(request.method, "GET");
 });
 
-QUnit.test("should fill in lists table from ajax response", function(assert) {
-  var url = "getitems";
-  var responseData = [
-    { id: 101, text: "item1 text" },
-    { id: 102, text: "item2 text" }
-  ];
-  server.respondWith("GET", url, [
-    200,
-    { "Content-Type": "application/json" },
-    JSON.stringify(responseData)
-  ]);
-  window.Superlists.initialize(url);
+QUnit.test(
+  "updateItems should fill in lists table from ajax response",
+  function(assert) {
+    var url = "getitems";
+    var responseData = [
+      { id: 101, text: "item1 text" },
+      { id: 102, text: "item2 text" }
+    ];
+    server.respondWith("GET", url, [
+      200,
+      { "Content-Type": "application/json" },
+      JSON.stringify(responseData)
+    ]);
+    window.Superlists.updateItems(url);
 
-  server.respond();
+    server.respond();
 
-  var rows = $("#id_list_table tr");
-  assert.equal(rows.length, 2);
-  var row1 = $("#id_list_table tr:first-child td");
-  assert.equal(row1.text(), "1: item1 text");
-  var row2 = $("#id_list_table tr:last-child td");
-  assert.equal(row2.text(), "2: item2 text");
-});
+    var rows = $("#id_list_table tr");
+    assert.equal(rows.length, 2);
+    var row1 = $("#id_list_table tr:first-child td");
+    assert.equal(row1.text(), "1: item1 text");
+    var row2 = $("#id_list_table tr:last-child td");
+    assert.equal(row2.text(), "2: item2 text");
+  }
+);
 
 QUnit.test("should intercept form submit and ajax post", function(assert) {
   var url = "listitemapi";
@@ -103,4 +113,22 @@ QUnit.test("should call updateItems after successful post", function(assert) {
   server.respond();
 
   assert.equal(window.Superlists.updateItems.lastCall.args, url);
+});
+
+QUnit.test("should display errors on post failure", function(assert) {
+  var url = "listitemapi";
+  window.Superlists.initialize(url);
+  var response = [
+    400,
+    { "Content-Type": "application/json" },
+    JSON.stringify({ error: "something is missing" })
+  ];
+  server.respondWith("POST", url, response);
+  $(".has-error").hide();
+
+  $("#id_item_form").submit();
+  server.respond();
+
+  assert.equal($(".has-error").is(":visible"), true);
+  assert.equal($(".has-error .help-block").text(), "something is missing");
 });
