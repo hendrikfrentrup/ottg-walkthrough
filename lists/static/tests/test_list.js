@@ -37,7 +37,9 @@ QUnit.test("errors should NOT be hidden if there is no click", function(
 QUnit.test("should call updateItems on initialize", function(assert) {
   var url = "/getitems/";
   sandbox.spy(window.Superlists, "updateItems");
-  window.Superlists.initialize(url);
+  window.Superlists.initialize({
+    listApiUrl: url
+  });
 
   assert.equal(window.Superlists.updateItems.lastCall.args, url);
 });
@@ -55,10 +57,13 @@ QUnit.test(
   "updateItems should fill in lists table from ajax response",
   function(assert) {
     var url = "getitems";
-    var responseData = [
-      { id: 101, text: "item1 text" },
-      { id: 102, text: "item2 text" }
-    ];
+    var responseData = {
+      id: 11,
+      items: [
+        { id: 101, text: "item1 text" },
+        { id: 102, text: "item2 text" }
+      ]
+    };
     server.respondWith("GET", url, [
       200,
       { "Content-Type": "application/json" },
@@ -79,7 +84,9 @@ QUnit.test(
 
 QUnit.test("should intercept form submit and ajax post", function(assert) {
   var url = "listitemapi";
-  window.Superlists.initialize(url);
+  window.Superlists.initialize({
+    itemsApiUrl: url
+  });
 
   $('#id_item_form input[name="text"]').val("user input");
   $('#id_item_form input[name="csrfmiddlewaretoken"]').val("tokeney");
@@ -97,7 +104,10 @@ QUnit.test("should intercept form submit and ajax post", function(assert) {
 
 QUnit.test("should call updateItems after successful post", function(assert) {
   var url = "listitemapi";
-  window.Superlists.initialize(url);
+  window.Superlists.initialize({
+    listApiUrl: url,
+    itemsApiUrl: url
+  });
   var responseData = [{ id: 101, text: "input item" }];
   var response = [
     201,
@@ -117,11 +127,14 @@ QUnit.test("should call updateItems after successful post", function(assert) {
 
 QUnit.test("should display errors on post failure", function(assert) {
   var url = "listitemapi";
-  window.Superlists.initialize(url);
+  window.Superlists.initialize({
+    listApiUrl: url,
+    itemsApiUrl: url
+  });
   var response = [
     400,
     { "Content-Type": "application/json" },
-    JSON.stringify({ error: "something is missing" })
+    JSON.stringify({ non_field_errors: ["something is missing"] })
   ];
   server.respondWith("POST", url, response);
   $(".has-error").hide();
