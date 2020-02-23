@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = ">=1.11.28"
+django = "==1.11.28"
 gunicorn = "*"
 djangorestframework = "*"
 
@@ -16,6 +16,7 @@ pytest = "*"
 autopep8 = "*"
 pytest-django = "*"
 coverage = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.6"
